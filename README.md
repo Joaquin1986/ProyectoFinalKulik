@@ -1,4 +1,5 @@
-# Getting Started with Create React App
+# Pre Entrega 1 de ReactJS
+# Coderhouse / Comisión 47150
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

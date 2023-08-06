@@ -1,0 +1,1 @@
+export const ItemCount = ({ callback }) => <p className="itemCount" onClick={callback}>0</p>;
