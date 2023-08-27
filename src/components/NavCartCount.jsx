@@ -1,0 +1,1 @@
+export const NavCartCount = ({ callback }) => <p className="navCarCount" onClick={callback}>0</p>;

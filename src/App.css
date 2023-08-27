@@ -16,7 +16,7 @@
   cursor: pointer;
 }
 
-.itemCount {
+.navCarCount {
   color: rgb(187, 187, 187);
   font-size: 25px;
   max-height: 25px;
@@ -25,7 +25,37 @@
   
 }
 
-.itemCount:hover {
+.navCarCount:hover {
   color: rgb(255, 255, 255);
   cursor: pointer;
+}
+
+.itemCountPanel {
+  font-size: 20px;
+}
+
+.itemListContainer{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+.productDiv {
+  margin: 10px;
+}
+
+.productDiv img {
+  max-height: 286px;
+  height: 286px;
+}
+
+.itemDetailContainer{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+.itemDetailContainer img {
+  max-height: 286px;
+  height: 286px;
 }
