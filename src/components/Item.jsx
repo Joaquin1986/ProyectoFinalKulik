@@ -1,5 +1,6 @@
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
+import {ItemCount} from './ItemCount'
 
 export const Item = ({ product }) => (
     <Card key={product.id} id={product.id} style={{ width: '18rem' }}>
@@ -7,7 +8,7 @@ export const Item = ({ product }) => (
         <Card.Body>
             <Card.Title>{product.prod_name}</Card.Title>
             <Card.Text>{product.category}</Card.Text>
-            <Button variant="primary">Go somewhere</Button>
+            <Button className='viewProduct' variant="primary">Ver Producto</Button>
         </Card.Body>
     </Card>
 );

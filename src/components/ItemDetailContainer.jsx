@@ -15,7 +15,7 @@ export const ItemDetailContainer = () => {
     }, []);
 
     if (product.length === 0) {
-        return <h1>Loading...</h1>
+        return <h1 className='loadingTitle'>Loading...</h1>
     }
     else {
         return (

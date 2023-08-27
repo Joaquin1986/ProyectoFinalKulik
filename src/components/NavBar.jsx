@@ -5,6 +5,8 @@ import { Carro } from './CartWidget.jsx';
 import { NavCartCount } from './NavCartCount.jsx';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import { NavLink } from 'react-router-dom';
+import data from "../data/products.json";
 
 export const NavBar = ({ texto }) => {
     const MySwal = withReactContent(Swal)
@@ -15,16 +17,18 @@ export const NavBar = ({ texto }) => {
             icon: 'success'
         })
     }
+    const categories = data.map(product => product.category);
+    const filteredCategories = new Set(categories);
+
     return (
         <>
             <Navbar bg="dark" data-bs-theme="dark">
                 <Container>
-                    <Navbar.Brand href="#preentrega1">Mi E-Commerce</Navbar.Brand>
+                    <NavLink to="/" className='nav-link-title'><strong>Mi E-Commerce</strong></NavLink>
                     <Nav className="me-auto">
-                        <Nav.Link href="#inicio">Inicio</Nav.Link>
-                        <Nav.Link href="#productos">Productos</Nav.Link>
-                        <Nav.Link href="#categorys">Categorías</Nav.Link>
-                        <Nav.Link href="#contactox">Contacto</Nav.Link>
+                        {[...filteredCategories].map(category => (
+                            <NavLink key={category} to={`/category/${category}`} className='nav-link'>{category}</NavLink>
+                        ))} 
                         <Carro callback={handleClick} />
                         <NavCartCount callback={handleClick} />
                     </Nav>

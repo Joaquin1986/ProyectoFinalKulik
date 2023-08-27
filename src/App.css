@@ -2,6 +2,36 @@
   text-align: center;
 }
 
+.loadingTitle{
+  text-align: center;
+  margin-top: 200px;
+}
+
+.viewProduct {
+  background-color: #212529 !important;
+  border-color: #32363b !important;
+  transition: 0.5s;
+}
+
+.viewProduct:hover{
+  background-color: #3c4044 !important;
+  border-color: #575c63 !important;
+}
+
+.nav-link-title {
+  color: rgb(187, 187, 187) !important;
+  transition: 0.5s;
+  font-size: 17px;
+  text-decoration: none;
+  margin-bottom:2px;
+  margin-right: 10px;
+  font-style: italic;
+}
+
+.nav-link-title:hover {
+  color: rgb(255, 255, 255) !important;
+}
+
 .bi {
   color: rgb(187, 187, 187);
   width: 27px;
@@ -10,6 +40,7 @@
   margin-left: 550px;
   transition: 0.5s;
 }
+
 
 .bi:hover {
   color: rgb(255, 255, 255);
@@ -22,7 +53,7 @@
   max-height: 25px;
   transition: 0.5s;
   margin-left: 4px;
-  
+
 }
 
 .navCarCount:hover {
@@ -34,7 +65,7 @@
   font-size: 20px;
 }
 
-.itemListContainer{
+.itemListContainer {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
@@ -49,7 +80,7 @@
   height: 286px;
 }
 
-.itemDetailContainer{
+.itemDetailContainer {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
