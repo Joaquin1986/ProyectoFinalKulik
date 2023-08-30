@@ -2,20 +2,32 @@
   text-align: center;
 }
 
-.loadingTitle{
+.loadingTitle {
   text-align: center;
   margin-top: 200px;
 }
 
-.viewProduct {
+.viewProduct,
+.itemCountAdd,
+.swal2-confirm,
+.backButton {
   background-color: #212529 !important;
   border-color: #32363b !important;
   transition: 0.5s;
 }
 
-.viewProduct:hover{
+.viewProduct:hover,
+.itemCountAdd:hover,
+.swal2-confirm:hover,
+.backButton:hover {
   background-color: #3c4044 !important;
   border-color: #575c63 !important;
+}
+
+.backButton {
+  padding-left: 100px !important;
+  padding-right: 100px !important;
+  margin-top: 20px;
 }
 
 .nav-link-title {
@@ -23,9 +35,13 @@
   transition: 0.5s;
   font-size: 17px;
   text-decoration: none;
-  margin-bottom:2px;
+  margin-bottom: 2px;
   margin-right: 10px;
   font-style: italic;
+}
+
+.itemCountAdd {
+  margin-left: 20px;
 }
 
 .nav-link-title:hover {
@@ -41,28 +57,37 @@
   transition: 0.5s;
 }
 
-
 .bi:hover {
   color: rgb(255, 255, 255);
   cursor: pointer;
 }
 
-.navCarCount {
+.navCartCount {
   color: rgb(187, 187, 187);
   font-size: 25px;
   max-height: 25px;
   transition: 0.5s;
   margin-left: 4px;
-
 }
 
-.navCarCount:hover {
+.navCartCount:hover {
   color: rgb(255, 255, 255);
   cursor: pointer;
 }
 
 .itemCountPanel {
   font-size: 20px;
+}
+
+.itemCountPanel button {
+  border: 0px;
+  background-color: white;
+  text-align: center;
+}
+
+.itemCountNumber {
+  margin-left: 10px;
+  margin-left: 10px;
 }
 
 .itemListContainer {
@@ -89,4 +114,10 @@
 .itemDetailContainer img {
   max-height: 286px;
   height: 286px;
+  max-width: 286px;
+}
+
+.itemDetail {
+  margin-left: 300px;
+  margin-top: 10px;
 }

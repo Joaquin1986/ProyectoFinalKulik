@@ -13,7 +13,7 @@ function App() {
         <Route exact path='/' element={<ItemListContainer />} />
         <Route exact path='/category/:id' element={<ItemListContainer />} />
         <Route exact path='/item/:itemId' element={<ItemDetailContainer />} />
-        <Route exact path='*' element={<h1>ERROR 404</h1>} />
+        <Route exact path='*' element={<h1 className='loadingTitle'>ERROR 404</h1>} />
       </Routes>
     </BrowserRouter>
   );

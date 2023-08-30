@@ -22,9 +22,9 @@ export const ItemListContainer = () => {
                     (product) => product.category === id
                 );
                 setProducts(productsFiltered);
-            }
+            }   
         });
-    }, []);
+    }, [id]);
 
     if (products.length === 0) {
         return <h1 className='loadingTitle'>Loading...</h1>
