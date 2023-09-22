@@ -9,6 +9,7 @@ export const ItemListContainer = () => {
     const { id } = useParams();
 
     useEffect(() => {
+
         const db = getFirestore();
         const refCollection = collection(db, "productos");
         getDocs(refCollection).then((snapshot) => {
@@ -22,14 +23,17 @@ export const ItemListContainer = () => {
                         })
                     );
                 } else {
-                    setProducts(
-                        snapshot.docs.filter((doc) => doc.categoryId === id)
-                    );
+                    let filteredProducts = [];
+                    snapshot.docs.forEach((doc) => {
+                        if (doc.data().categoryId === id) {
+                            filteredProducts.push({ id: doc.id, ...doc.data() });
+                        }
+                    });
+                    setProducts(filteredProducts);
                 }
             }
         });
-    }, []);
-
+    }, [id]);
     if (products.length === 0) {
         return <h1 className='loadingTitle'>Loading...</h1>
     } else {

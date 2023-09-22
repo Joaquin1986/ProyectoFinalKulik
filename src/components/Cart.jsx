@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
+import Form from 'react-bootstrap/Form';
 
 
 export const Cart = (handleCallback) => {
@@ -18,7 +19,6 @@ export const Cart = (handleCallback) => {
     } else {
         return (
             <Container>
-                <h4> Carrito de compras. </h4>
                 <Table striped bordered hover>
                     <thead>
                         <tr>
@@ -42,6 +42,28 @@ export const Cart = (handleCallback) => {
                         </tr>
                     </tbody>
                 </Table>
+                <Form>
+                    <Form.Group className="mb-3" controlId="formBasicName">
+                        <Form.Label><strong>Nombre:</strong></Form.Label>
+                        <Form.Control type="name" placeholder="Su nombre aquí" required />
+                        <Form.Text className="text-muted">
+                            Ingrese su nombre completo (nombre y apellido)
+                        </Form.Text>
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="formBasicEmail">
+                        <Form.Label><strong>E-mail:</strong></Form.Label>
+                        <Form.Control type="email" placeholder="Tu e-mail aquí" required />
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="formBasicPhone">
+                        <Form.Label><strong>Teléfono:</strong></Form.Label>
+                        <Form.Control type="phone" placeholder="Tu teléfono aquí" required />
+                    </Form.Group>
+                    <div className="d-grid gap-2">
+                        <Button variant="primary" type="submit" className='makeOrderButton' onClick={() => alert("Se realiza pedido")}>
+                            Realizar compra
+                        </Button>
+                    </div>
+                </Form>
             </Container>
         )
     }

@@ -142,13 +142,15 @@
   margin-top: 10px;
 }
 
-.itemDelete {
+.itemDelete,
+.makeOrderButton {
   background-color: #212529 !important;
   border-color: #32363b !important;
   transition: 0.5s;
 }
 
-.itemDelete:hover {
+.itemDelete:hover,
+.makeOrderButton:hover {
   background-color: #3c4044 !important;
   border-color: #575c63 !important;
 }
