@@ -10,7 +10,7 @@ import { Cart } from './components/Cart';
 function App() {
   return (<CartProvider>
     <BrowserRouter>
-      <NavBar texto="Prueba satisfactoria de Props a través del Navbar" />
+      <NavBar />
       <Routes>
         <Route exact path='/' element={<ItemListContainer />} />
         <Route exact path='/category/:id' element={<ItemListContainer />} />

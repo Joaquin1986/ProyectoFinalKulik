@@ -2,7 +2,8 @@
   text-align: center;
 }
 
-.loadingTitle, .cartDiv {
+.loadingTitle,
+.cartDiv {
   text-align: center;
   margin-top: 200px;
 }
@@ -22,6 +23,16 @@
 .backButton:hover {
   background-color: #3c4044 !important;
   border-color: #575c63 !important;
+}
+
+.swal2-icon-success {
+  background-color: #575c63 !important;
+  color: white;
+}
+
+.swal2-icon-error {
+  background-color: #575c63 !important;
+  color: white;
 }
 
 .backButton {
@@ -88,8 +99,9 @@
   color: white;
   transition: 0.5s;
 }
-.itemCountPanel button:hover{
-    background-color: #3c4044;
+
+.itemCountPanel button:hover {
+  background-color: #3c4044;
   border-color: #575c63;
 }
 
@@ -128,4 +140,15 @@
 .itemDetail {
   margin-left: 300px;
   margin-top: 10px;
+}
+
+.itemDelete {
+  background-color: #212529 !important;
+  border-color: #32363b !important;
+  transition: 0.5s;
+}
+
+.itemDelete:hover {
+  background-color: #3c4044 !important;
+  border-color: #575c63 !important;
 }

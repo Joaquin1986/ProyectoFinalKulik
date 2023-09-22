@@ -1,1 +1,11 @@
-export const NavCartCount = ({ callback }) => <p className="navCartCount" onClick={callback}>0</p>;
+import { useContext } from 'react';
+import { CartContext } from '../contexts/CartContext'
+
+export const NavCartCount = () => {
+    const { totalWidget } = useContext(CartContext);
+    return (
+        <>
+            <p className="navCartCount">{totalWidget()}</p>
+        </>
+    )
+} 

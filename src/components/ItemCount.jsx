@@ -12,7 +12,7 @@ export const ItemCount = ({ product }) => {
     const { addItem } = useContext(CartContext)
     const Toast = Swal.mixin({
         toast: true,
-        position: 'top-end',
+        position: 'bottom-end',
         showConfirmButton: false,
         timer: 2000
     })
@@ -23,7 +23,6 @@ export const ItemCount = ({ product }) => {
                 title: `Error: cantidad negativa`
             })
     }
-
     const handleIncreaseCount = () => {
         product.stock > count ? setCount((prev) => prev + 1) :
             Toast.fire({
@@ -31,7 +30,6 @@ export const ItemCount = ({ product }) => {
                 title: `Error: supera stock (${product.stock})`
             })
     }
-
     return (
         <div className='itemCount'>
             <span className='itemCountPanel' onClick={handleDecreaseCount}><button>-</button></span>

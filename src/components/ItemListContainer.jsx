@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import { useParams } from 'react-router-dom';
-
-import data from "../data/products.json";
-
+import { getFirestore, getDocs, collection } from 'firebase/firestore';
 import { ItemList } from './ItemList';
 
 export const ItemListContainer = () => {
@@ -11,20 +9,26 @@ export const ItemListContainer = () => {
     const { id } = useParams();
 
     useEffect(() => {
-        const promise = new Promise((resolve, reject) => {
-            setTimeout(() => resolve(data), 2000);
-        });
-        promise.then(data => {
-            if (!id) {
-                setProducts(data);
+        const db = getFirestore();
+        const refCollection = collection(db, "productos");
+        getDocs(refCollection).then((snapshot) => {
+            if (snapshot.size === 0) {
+                console.warn("no hay resultados")
             } else {
-                const productsFiltered = data.filter(
-                    (product) => product.category === id
-                );
-                setProducts(productsFiltered);
-            }   
+                if (id === undefined) {
+                    setProducts(
+                        snapshot.docs.map((doc) => {
+                            return { id: doc.id, ...doc.data() };
+                        })
+                    );
+                } else {
+                    setProducts(
+                        snapshot.docs.filter((doc) => doc.categoryId === id)
+                    );
+                }
+            }
         });
-    }, [id]);
+    }, []);
 
     if (products.length === 0) {
         return <h1 className='loadingTitle'>Loading...</h1>

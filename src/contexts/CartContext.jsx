@@ -5,6 +5,21 @@ export const CartContext = createContext([]);
 
 export const CartProvider = ({ children }) => {
     const [items, setItems] = useState([]);
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'bottom-end',
+        showConfirmButton: false,
+        timer: 2000
+    })
+
+    const totalWidget = () => {
+        if (items.length) {
+            return items.reduce((act, item) => act + item.quantity, 0)
+        } else {
+            return 0;
+        }
+    }
+
     const addItem = (product, quantity) => {
         if (quantity > 0) {
             if (!isInCart(product.id)) {
@@ -26,25 +41,11 @@ export const CartProvider = ({ children }) => {
                     }
                 })
             }
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 2000
-            })
-
             Toast.fire({
                 icon: 'success',
-                title: `+${quantity} de ${product.prod_name} al carrito`
+                title: `+${quantity} de ${product.title} al carrito`
             })
         } else {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 2000
-            })
-
             Toast.fire({
                 icon: 'error',
                 title: `Error: cantidad nula`
@@ -68,7 +69,15 @@ export const CartProvider = ({ children }) => {
         return productFound;
     }
 
+    const totalPrice = () => {
+        let returnPrice = 0;
+        items.forEach((item) => {
+            returnPrice += item.quantity * item.price;
+        })
+        return returnPrice;
+    }
+
     return (
-        <CartContext.Provider value={{ addItem, removeItem, clear }}>{children}</CartContext.Provider >
+        <CartContext.Provider value={{ addItem, removeItem, clear, totalWidget, items, totalPrice }}>{children}</CartContext.Provider >
     )
 }
