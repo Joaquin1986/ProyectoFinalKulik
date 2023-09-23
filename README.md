@@ -2,11 +2,11 @@
 
 [Proyecto FINAL de React JS](https://github.com/Joaquin1986/ProyectoFinalKulik) para Coderhouse / Comisión 47150. 
 
-## App Description
+## Descripción de la App
 
 Se desarrolla una APP de e-commerce en React JS que permite elegir una serie de productos, los cuales son obtenidos desde una base de datos Firestore(Firebase). Este proyecto cuenta con las implementaciones de las pre-entregas (incluyendo react-router-dom, hooks, etc.), además de haber sumado las últimas implementaciones para la última 
 
-## Run or Execute the App
+## Ejecución de la App
 
 Luego de descargar o clonar el proyecto, en el directorio elegido se puede ejecutar el siguiente comando en una CLI (ya sea Poowershell, Bash u la que se elija):
 
@@ -15,7 +15,7 @@ Luego de descargar o clonar el proyecto, en el directorio elegido se puede ejecu
 Este comando ejecuta la app en modo 'desarrollo'
 Se puede abrir la dirección [http://localhost:3000](http://localhost:3000) para poder visualizar la app en el browser que se elija (se recomienda Chrome)
 
-## Needed Components (NPM importing)
+## Componentes Necesarios (NPM Import)
 
 La App necesita la importación/import (se recomienda [NPM](https://www.npmjs.com/)) de los siguientes componentes:
 
@@ -24,7 +24,7 @@ La App necesita la importación/import (se recomienda [NPM](https://www.npmjs.co
 ✔️ firebase/firestore ([https://firebase.google.com/docs/firestore](https://firebase.google.com/docs/firestore))<br>
 ✔️ sweetalert2 ([https://github.com/sweetalert2/sweetalert2-react-content](https://github.com/sweetalert2/sweetalert2-react-content))<br>
 
-## App JSX Components
+## Componentes JSX de la App
 
 La App está desarrollada con los siguientes Componentes JSX, cuyo funcionamiento o descripción se detalla a continuación.
 
@@ -78,3 +78,7 @@ Renderiza el Widget del carrito ubicado sobre la derecha en el navbar
 ### `Cart.jsx`
 
 Renderiza el detalle del carrito y el formulario para introducir los datos de la orden, dentro del CartWiget del navbar.
+
+## Estilos CSS
+
+Los estilos CSS de la App están configurados en el archivo 'App.css' bajo 'src'.
