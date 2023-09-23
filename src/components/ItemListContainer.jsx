@@ -9,7 +9,6 @@ export const ItemListContainer = () => {
     const { id } = useParams();
 
     useEffect(() => {
-
         const db = getFirestore();
         const refCollection = collection(db, "productos");
         getDocs(refCollection).then((snapshot) => {

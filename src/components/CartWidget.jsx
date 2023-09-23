@@ -4,7 +4,6 @@ import { useState, useContext } from 'react';
 import { CartContext } from '../contexts/CartContext'
 import Offcanvas from 'react-bootstrap/Offcanvas';
 
-
 export const CartWidget = () => {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);

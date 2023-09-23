@@ -1,14 +1,52 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { CartContext } from '../contexts/CartContext'
 import { NavLink } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
-
+import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
 export const Cart = (handleCallback) => {
-    const { totalWidget, items, removeItem, totalPrice } = useContext(CartContext)
+    const { totalWidget, items, removeItem, totalPrice, clear } = useContext(CartContext)
+    const MySwal = withReactContent(Swal)
+    const [formValues, setFormValues] = useState({
+        name: "",
+        email: "",
+        phone: "",
+    })
+    const checkout = () => {
+        const order = {
+            buyer: formValues,
+            items: items,
+            total: totalPrice(),
+            date: serverTimestamp()
+        }
+        const db = getFirestore();
+        const orderCollection = collection(db, "orders");
+        addDoc(orderCollection, order).then(({ id }) => {
+            if (id) {
+                MySwal.fire({
+                    title: <strong>Orden enviada!</strong>,
+                    html: `Su orden ${id} ha sido creada!<br>Gracias por comprar, ${order.buyer.name}!`,
+                    icon: 'success'
+                })
+                setFormValues({
+                    name: "",
+                    email: "",
+                    phone: "",
+                })
+                clear()
+            }
+        });
+    }
+    const handleChange = ev => {
+        setFormValues(prev => ({
+            ...prev, [ev.target.name]: ev.target.value,
+        }))
+    }
     if (totalWidget() === 0) {
         return (
             <Container className='cartDiv'>
@@ -45,21 +83,21 @@ export const Cart = (handleCallback) => {
                 <Form>
                     <Form.Group className="mb-3" controlId="formBasicName">
                         <Form.Label><strong>Nombre:</strong></Form.Label>
-                        <Form.Control type="name" placeholder="Su nombre aquí" required />
+                        <Form.Control type="text" placeholder="Su nombre aquí" value={formValues.name} onChange={handleChange} name='name' />
                         <Form.Text className="text-muted">
                             Ingrese su nombre completo (nombre y apellido)
                         </Form.Text>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasicEmail">
                         <Form.Label><strong>E-mail:</strong></Form.Label>
-                        <Form.Control type="email" placeholder="Tu e-mail aquí" required />
+                        <Form.Control type="email" placeholder="Tu e-mail aquí" value={formValues.email} onChange={handleChange} name='email' />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasicPhone">
                         <Form.Label><strong>Teléfono:</strong></Form.Label>
-                        <Form.Control type="phone" placeholder="Tu teléfono aquí" required />
+                        <Form.Control type="text" placeholder="Tu teléfono aquí" name='phone' value={formValues.phone} onChange={handleChange} />
                     </Form.Group>
                     <div className="d-grid gap-2">
-                        <Button variant="primary" type="submit" className='makeOrderButton' onClick={() => alert("Se realiza pedido")}>
+                        <Button variant="primary" className='makeOrderButton' onClick={checkout}>
                             Realizar compra
                         </Button>
                     </div>
