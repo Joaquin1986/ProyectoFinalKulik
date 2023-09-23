@@ -1,71 +1,80 @@
-# Proyecto FINAL de React JS
-# Coderhouse / Comisión 47150
+# Proyecto FINAL de React JS. Coderhouse (Comisión 47150)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[Proyecto FINAL de React JS](https://github.com/Joaquin1986/ProyectoFinalKulik) para Coderhouse / Comisión 47150. 
 
-## Available Scripts
+## App Description
 
-In the project directory, you can run:
+Se desarrolla una APP de e-commerce en React JS que permite elegir una serie de productos, los cuales son obtenidos desde una base de datos Firestore(Firebase). Este proyecto cuenta con las implementaciones de las pre-entregas (incluyendo react-router-dom, hooks, etc.), además de haber sumado las últimas implementaciones para la última 
+
+## Run or Execute the App
+
+Luego de descargar o clonar el proyecto, en el directorio elegido se puede ejecutar el siguiente comando en una CLI (ya sea Poowershell, Bash u la que se elija):
 
 ### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Este comando ejecuta la app en modo 'desarrollo'
+Se puede abrir la dirección [http://localhost:3000](http://localhost:3000) para poder visualizar la app en el browser que se elija (se recomienda Chrome)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Needed Components (NPM importing)
 
-### `npm test`
+La App necesita la importación/import (se recomienda [NPM](https://www.npmjs.com/)) de los siguientes componentes:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+✔️ react-router-dom ([https://www.npmjs.com/package/react-router-dom](https://www.npmjs.com/package/react-router-dom))
+✔️ react-bootstrap ([https://react-bootstrap.netlify.app/](https://react-bootstrap.netlify.app/))
+✔️ firebase/firestore ([https://firebase.google.com/docs/firestore](https://firebase.google.com/docs/firestore))
+✔️ sweetalert2 ([https://github.com/sweetalert2/sweetalert2-react-content](https://github.com/sweetalert2/sweetalert2-react-content))
 
-### `npm run build`
+## App JSX Components
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+La App está desarrollada con los siguientes Componentes JSX, cuyo funcionamiento o descripción se detalla a continuación.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### `CartContext.jsx`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Es el proveedor del Contexto del Cart para aquellos módulos que lo necesiten. Cuenta con funciones que:
 
-### `npm run eject`
+✔️ Devuelve la cantidad de elementos agregados en el carrito - totalWidget()
+✔️ Agrega elementos al carrito, pasándole como argumentos el objeto 'producto' y la cantidad del mismo - addItem(product, quantity)
+✔️ Quita elementos del carrito, pasándole como argumento el id del 'producto' que se desea remover o quitar - removeItem(id)
+✔️ Limpia los elementos del carrito, luego de efectuar una compra - clear()
+✔️ Devuelve valor 'boolean' ('true' o 'false') en caso de que un producto esté o no en el carrito, pasándole como argumento el id del producto - isInCart(id)
+✔️ Devuelve el precio total de la orden o pedido - totalPrice()
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### `NavBar.jsx`
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Es el componente que renderiza el navbar de la App.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### `ItemListContainer.jsx`
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Realiza la consulta de la colección 'products' a la base de datos (firebase) y pasa como 'prop' la lista de productos obtenida al componente 'ItemList.jsx'. La lista puede ser de  forma general (sin filtro de categoría) o de forma específica (con filtro de categoría por 'id' de la misma).
 
-## Learn More
+### `ItemList.jsx`
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Renderiza la lista de productos que recibe como 'prop' y a la vez pasa esa misma 'prop' que recibe al componente 'Item.jsx' para que lo procese.
+ 
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### `ItemDetailContainer.jsx`
 
-### Code Splitting
+Realiza la consulta de un elemento específico de la colección 'products' a la base de datos (firebase) y pasa como 'prop' el producto obtenido al componente 'ItemDetail.jsx'. 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### `ItemDetail.jsx`
 
-### Analyzing the Bundle Size
+Renderiza la card del producto que recibe como 'prop' y a la vez pasa esa misma 'prop' que recibe al componente 'ItemCount.jsx' para que lo procese.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### `ItemCount.jsx`
 
-### Making a Progressive Web App
+Renderiza el panel que muestra la cantidad de productos seleccionados, y los botones para sumar, restar y agregar productos en el carrito. Cuenta con funciones que:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+✔️ Resta (-1) la cantidad del producto seleccionado cuando se dispara el evento onClick - handleDecreaseCount()
+✔️ Suma (+1) la cantidad del producto seleccionado cuando se dispara el evento onClick - handleIncreaseCount()
 
-### Advanced Configuration
+### `Item.jsx`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Renderiza la card del producto que recibe como 'prop' desde el componente 'ItemList.jsx"
 
-### Deployment
+### `CartWidget.jsx`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Renderiza el Widget del carrito ubicado sobre la derecha en el navbar
 
-### `npm run build` fails to minify
+### `Cart.jsx`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Renderiza el detalle del carrito y el formulario para introducir los datos de la orden, dentro del CartWiget del navbar.

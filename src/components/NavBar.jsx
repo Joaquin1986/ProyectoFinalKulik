@@ -5,7 +5,7 @@ import { CartWidget } from './CartWidget.jsx';
 import { NavLink } from 'react-router-dom';
 import { getFirestore, getDocs, collection } from 'firebase/firestore';
 import { useState, useEffect } from 'react';
-
+import Logo from '../img/logo.jpg';
 
 export const NavBar = () => {
     const [data, setData] = useState([]);
@@ -27,10 +27,10 @@ export const NavBar = () => {
             <>
                 <Navbar bg="dark" data-bs-theme="dark">
                     <Container>
-                        <NavLink to="/" className='nav-link-title'><strong>Mi E-Commerce</strong></NavLink>
+                        <NavLink to="/" className='nav-link-title'><img src={Logo} alt='Logo de empresa' className='logo'></img></NavLink>
                         <Nav className="me-auto">
                             {[...filteredCategories].map(category => (
-                                <NavLink key={category} to={`/category/${category}`} className='nav-link'>{category}</NavLink>
+                                <NavLink key={category} to={`/category/${category}`} className='nav-link'><strong>{category}</strong></NavLink>
                             ))}
                             <CartWidget />
                         </Nav>

@@ -13,13 +13,13 @@ export const CartWidget = () => {
     return (
         <>
             <CarroSvg onClick={handleShow} />
-            <p className="navCartCount" onClick={handleShow}>{totalWidget()}</p>
+            <p className="navCartCount" onClick={handleShow}>{totalWidget() > 0 ? totalWidget() : null}</p>
             <Offcanvas placement={'end'} show={show} onHide={handleClose}>
                 <Offcanvas.Header closeButton>
                     <Offcanvas.Title>Carrito de compras</Offcanvas.Title>
                 </Offcanvas.Header>
                 <Offcanvas.Body>
-                    <Cart handleCallback={handleCallback} />
+                    <Cart onCart={handleCallback} />
                 </Offcanvas.Body>
             </Offcanvas>
 

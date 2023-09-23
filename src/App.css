@@ -8,6 +8,10 @@
   margin-top: 200px;
 }
 
+.logo{
+ max-width: 150px;
+}
+
 .viewProduct,
 .itemCountAdd,
 .swal2-confirm,
@@ -64,7 +68,7 @@
   width: 27px;
   height: 27px;
   margin-top: 5px;
-  margin-left: 550px;
+  margin-left: 490px;
   transition: 0.5s;
 }
 
