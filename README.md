@@ -32,12 +32,12 @@ La App está desarrollada con los siguientes Componentes JSX, cuyo funcionamient
 
 Es el proveedor del Contexto del Cart para aquellos módulos que lo necesiten. Cuenta con funciones que:
 
-✔️ Devuelve la cantidad de elementos agregados en el carrito - totalWidget()
-✔️ Agrega elementos al carrito, pasándole como argumentos el objeto 'producto' y la cantidad del mismo - addItem(product, quantity)
-✔️ Quita elementos del carrito, pasándole como argumento el id del 'producto' que se desea remover o quitar - removeItem(id)
-✔️ Limpia los elementos del carrito, luego de efectuar una compra - clear()
-✔️ Devuelve valor 'boolean' ('true' o 'false') en caso de que un producto esté o no en el carrito, pasándole como argumento el id del producto - isInCart(id)
-✔️ Devuelve el precio total de la orden o pedido - totalPrice()
+✔️ Devuelve la cantidad de elementos agregados en el carrito - totalWidget()<br>
+✔️ Agrega elementos al carrito, pasándole como argumentos el objeto 'producto' y la cantidad del mismo - addItem(product, quantity)<br>
+✔️ Quita elementos del carrito, pasándole como argumento el id del 'producto' que se desea remover o quitar - removeItem(id)<br>
+✔️ Limpia los elementos del carrito, luego de efectuar una compra - clear()<br>
+✔️ Devuelve valor 'boolean' ('true' o 'false') en caso de que un producto esté o no en el carrito, pasándole como argumento el id del producto - isInCart(id)<br>
+✔️ Devuelve el precio total de la orden o pedido - totalPrice()<br>
 
 ### `NavBar.jsx`
 
@@ -64,8 +64,8 @@ Renderiza la card del producto que recibe como 'prop' y a la vez pasa esa misma 
 
 Renderiza el panel que muestra la cantidad de productos seleccionados, y los botones para sumar, restar y agregar productos en el carrito. Cuenta con funciones que:
 
-✔️ Resta (-1) la cantidad del producto seleccionado cuando se dispara el evento onClick - handleDecreaseCount()
-✔️ Suma (+1) la cantidad del producto seleccionado cuando se dispara el evento onClick - handleIncreaseCount()
+✔️ Resta (-1) la cantidad del producto seleccionado cuando se dispara el evento onClick - handleDecreaseCount()<br>
+✔️ Suma (+1) la cantidad del producto seleccionado cuando se dispara el evento onClick - handleIncreaseCount()<br>
 
 ### `Item.jsx`
 
