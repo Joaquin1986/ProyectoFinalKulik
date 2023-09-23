@@ -19,10 +19,10 @@ Se puede abrir la dirección [http://localhost:3000](http://localhost:3000) para
 
 La App necesita la importación/import (se recomienda [NPM](https://www.npmjs.com/)) de los siguientes componentes:
 
-✔️ react-router-dom ([https://www.npmjs.com/package/react-router-dom](https://www.npmjs.com/package/react-router-dom))
-✔️ react-bootstrap ([https://react-bootstrap.netlify.app/](https://react-bootstrap.netlify.app/))
-✔️ firebase/firestore ([https://firebase.google.com/docs/firestore](https://firebase.google.com/docs/firestore))
-✔️ sweetalert2 ([https://github.com/sweetalert2/sweetalert2-react-content](https://github.com/sweetalert2/sweetalert2-react-content))
+✔️ react-router-dom ([https://www.npmjs.com/package/react-router-dom](https://www.npmjs.com/package/react-router-dom))<br>
+✔️ react-bootstrap ([https://react-bootstrap.netlify.app/](https://react-bootstrap.netlify.app/))<br>
+✔️ firebase/firestore ([https://firebase.google.com/docs/firestore](https://firebase.google.com/docs/firestore))<br>
+✔️ sweetalert2 ([https://github.com/sweetalert2/sweetalert2-react-content](https://github.com/sweetalert2/sweetalert2-react-content))<br>
 
 ## App JSX Components
 
