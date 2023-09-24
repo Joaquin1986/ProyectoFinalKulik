@@ -6,9 +6,14 @@ import { NavLink } from 'react-router-dom';
 import { getFirestore, getDocs, collection } from 'firebase/firestore';
 import { useState, useEffect } from 'react';
 import Logo from '../img/logo.jpg';
+import Logo2 from '../img/logo2.jpg';
 
 export const NavBar = () => {
     const [data, setData] = useState([]);
+    const [logoHover, setlogoHover] = useState(false);
+    const handleHover = () => {
+        setlogoHover(!logoHover);
+    };
     useEffect(() => {
         const db = getFirestore();
         const refCollection = collection(db, "productos");
@@ -27,7 +32,7 @@ export const NavBar = () => {
             <>
                 <Navbar bg="dark" data-bs-theme="dark">
                     <Container>
-                        <NavLink to="/" className='nav-link-title'><img src={Logo} alt='Logo de empresa' className='logo'></img></NavLink>
+                        <NavLink to="/" className='nav-link-title'><img src={!logoHover ? Logo : Logo2} alt='Logo de e-Almacen' onMouseEnter={handleHover} onMouseLeave={handleHover} className='logo'></img></NavLink>
                         <Nav className="me-auto">
                             {[...filteredCategories].map(category => (
                                 <NavLink key={category} to={`/category/${category}`} className='nav-link'><strong>{category}</strong></NavLink>

@@ -8,7 +8,7 @@ Se desarrolla una APP de e-commerce en React JS que permite elegir una serie de 
 
 ## Ejecución de la App
 
-Luego de descargar o clonar el proyecto, en el directorio elegido se puede ejecutar el siguiente comando en una CLI (ya sea Poowershell, Bash u la que se elija):
+Luego de descargar o clonar el proyecto, en el directorio elegido se puede ejecutar el siguiente comando en una CLI (ya sea Poowershell, Bash o la que se elija):
 
 ### `npm start`
 
