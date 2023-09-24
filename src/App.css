@@ -8,9 +8,9 @@
   margin-top: 200px;
 }
 
-.logo {
-  max-width: 150px;
-  transition: 0.5s;
+.logo{
+ max-width: 150px;
+ transition: 0.5s;
 }
 
 .viewProduct,
@@ -61,13 +61,7 @@
 }
 
 .nav-link-title:hover {
-  /*color: rgb(255, 255, 255) !important;*/
-  /* background: -webkit-linear-gradient(rgb(12, 207, 241), rgb(236, 4, 225)) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important; */
-  background: linear-gradient(to right, rgb(12, 207, 241), rgb(236, 4, 225)) !important;
-  -webkit-text-fill-color: transparent !important;
-  -webkit-background-clip: text !important;
+  color: rgb(255, 255, 255) !important;
 }
 
 .bi {
