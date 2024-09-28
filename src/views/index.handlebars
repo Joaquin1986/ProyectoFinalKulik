@@ -1,0 +1,87 @@
+<div class="container">
+    <nav>
+        <ul>
+            <li><a href="/views/products"><img id="logoNav" src="/img/logoAlmacen.png" alt="Almacen de Productos"></a>
+            </li>
+        </ul>
+        <ul>
+            <li><a href="/views/products" class="contrast">Home 🏡</a></li>
+            <li id="liBeforeCart"><a href="/views/realtimeproducts" class="contrast">Productos en Tiempo Real⌚</a></li>
+        </ul>
+    </nav>
+    <hr />
+    <h1 class="hProd">Home de Productos 🏡</h1>
+    <div id="filterSortDiv">
+        <hr />
+        <details>
+            <summary>Opciones de búsqueda ⚙🔎</summary>
+            <fieldset role="group">
+                <select name="sort" aria-label="sort" id="sortOption">
+                    <option selected disabled value="unselected">Orden por Precio</option>
+                    <option value="">Sin orden</option>
+                    <option value="asc">Menor a mayor (asc)</option>
+                    <option value="desc">Mayor a menor (desc)</option>
+                </select>
+                  <select name="limit" aria-label="limit" id="limitOption">
+                    <option selected disabled value="unselected">Límite por Página</option>
+                    <option value="6">6 Productos</option>
+                    <option value="10">10 Productos</option>
+                    <option value="20">20 Productos</option>
+                </select>
+                <input name="category" type="text" id="filterText" placeholder="<Ingrese categoría a buscar>" value="" />
+                <input type="submit" value="Buscar" onclick="filteredSortedSearch()" />
+            </fieldset>
+        </details>
+        <hr />
+    </div>
+    {{#if products}}
+    <div id="productsGrid">
+        {{#each products}}
+        <div class="product" id="product-{{_id}}">
+            <article class="articleProduct">
+                <header>
+                    <h3 class="hProd" id="title-{{_id}}">{{title}}📦</h3>
+                    <div class="productImages" id="images-{{_id}}">
+                        {{#if thumbnails}}
+                        {{#each thumbnails}}
+                        <img src="{{this}}" alt="Imagen del Producto {{../title}}">
+                        {{/each}}
+                        {{else}}
+                        <p>El producto aún no tiene imágenes</p>
+                        {{/if}}
+                    </div>
+                </header>
+                <p class="pProd" id="code-{{_id}}"><u> Código:</u> {{code}}</p>
+                <hr />
+                <p class="pProd" id="description-{{_id}}"><u>Descripción:</u> {{description}}</p>
+                <hr />
+                <p class="pProd" id="stock-{{_id}}"><u>Stock:</u> {{stock}}</p>
+                <hr />
+                <p class="pProd" id="status-{{_id}}"><u>Precio:</u> ${{price}}</p>
+                <footer class="footerProduct">
+                    <button class="buyProductButton" id="{{_id}}" onclick="buyProductButton(event)">Comprar</button>
+                </footer>
+            </article>
+        </div>
+        {{/each}}
+    </div>
+    <span id="spanPaginate">
+        {{#if details.hasPrevPage}}
+        <a href="{{details.firstLink}}">⏮Primera</a>
+        <a href="{{details.prevLink}}">◀Anterior </a>
+        {{/if}}
+        <p>Página {{details.page}} de {{details.totalPages}}</p>
+        {{#if details.hasNextPage}}
+        <a href="{{details.nextLink}}"> Siguiente▶</a>
+        <a href="{{details.lastLink}}"> Última⏭</a>
+        {{/if}}
+    </span>
+    <h2 class="hProd" id="h2Total">Total: {{details.totalDocs}}</h2>
+    {{else}}
+    <h2 id="noProductsH2">No hay productos para mostrar ⛔</h2>
+
+    {{/if}}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/js/index.js"> </script>
