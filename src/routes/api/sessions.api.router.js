@@ -66,7 +66,7 @@ usersApiRouter.get('/sessions/current', passportCallBack('current'), async (req,
             const user = await UserManager.getUserById(req.user.userId);
             return res.status(200).json(createUserResponse(200, 'Authorized', req, user));
         } else {
-            return res.status(401).json(createUserResponse(401, 'Unhautorized', req, null,))
+            return res.status(401).json(createUserResponse(401, 'Unauthorized', req, null,))
         }
     } catch (error) {
         res.status(500).json({ '⛔Error interno:': error.message });

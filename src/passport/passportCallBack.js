@@ -6,7 +6,7 @@ const passportCallBack = (strategy) => {
         passport.authenticate(strategy, (err, user, info) => {
             if (err) return next(err);
             if (!user) {
-                return res.status(401).json(createUserResponse(req, 401, null, info.messages ? info.messages : info.toString()));
+                return res.status(401).json(createUserResponse(401, 'Unauthorized', req, info.messages ? info.messages : info.toString()));
             }
             req.user = user;
             next();
