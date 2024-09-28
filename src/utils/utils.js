@@ -97,12 +97,12 @@ const buildResponse = (data, type, sort, category) => {
     return response;
 }
 
-const createUserResponse = (req, statusCode, data, error = null) => {
+const createUserResponse = (statusCode, result = null, req, data) => {
     return {
-        data,
         status: statusCode,
-        error,
+        result: result,
         path: req.url,
+        payload: data,
     };
 };
 
@@ -128,6 +128,18 @@ const isValidPassword = async (password, user) => {
         return false
 }
 
+const parseThumbsIndex = (deleteThumbIndex) => {
+    const parsedIndexes = [];
+    if (deleteThumbIndex && (typeof deleteThumbIndex).toLowerCase() !== 'string') {
+        Object.values(deleteThumbIndex).forEach((value) => {
+            parsedIndexes.push(parseInt(value));
+        });
+    } else if (deleteThumbIndex && (typeof deleteThumbIndex).toLowerCase() === 'string') {
+        parsedIndexes.push(parseInt(deleteThumbIndex));
+    }
+    return parsedIndexes;
+}
+
 module.exports = {
     uploadMulter,
     publicPath,
@@ -137,5 +149,6 @@ module.exports = {
     createUserResponse,
     generateUserToken,
     createUserPasswordHash,
-    isValidPassword
+    isValidPassword,
+    parseThumbsIndex
 };

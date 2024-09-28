@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { Product, ProductManager } = require('../../controllers/ProductManager');
-const { uploadMulter, buildResponse } = require('../../utils/utils');
+const { uploadMulter, buildResponse, parseThumbsIndex } = require('../../utils/utils');
 
 const productsApiRouter = Router();
 const maxFilesAllowed = 5;
@@ -109,14 +109,7 @@ productsApiRouter.put("/products/:pid", uploadMulter.array('thumbnails'), async 
     const { title, description, price, code, status, stock, deleteThumbIndex, category } = body;
     if (!title && !description && !price && !code && !status && !stock && !deleteThumbIndex & !category)
         return res.status(400).json({ "Error": "petición incorrecta" });
-    const deleteThumbIndexParsed = [];
-    if (deleteThumbIndex && (typeof deleteThumbIndex).toLowerCase() !== 'string') {
-        Object.values(deleteThumbIndex).forEach((value) => {
-            deleteThumbIndexParsed.push(parseInt(value));
-        });
-    } else if (deleteThumbIndex && (typeof deleteThumbIndex).toLowerCase() === 'string') {
-        deleteThumbIndexParsed.push(parseInt(deleteThumbIndex));
-    }
+    const deleteThumbIndexParsed = parseThumbsIndex(deleteThumbIndex);
     if (pid) {
         try {
             let statusNew = true;
@@ -174,38 +167,7 @@ productsApiRouter.put("/products/:pid", uploadMulter.array('thumbnails'), async 
                     });
                 }
                 // En caso de pasar datos en 'deleteThumbIndex', se eliminan las thumbnails elegidas
-                let deletedFiles = [];
-                const thumbnailsObjValues = Object.values(prodFound.thumbnails);
-                if (deleteThumbIndexParsed.length > 0) {
-                    // Se eliminan los archivos de imagenes pasados por pa
-                    deleteThumbIndexParsed.forEach(async (originalIndex) => {
-                        let index = -1;
-                        if (parseInt(originalIndex) > 0 && parseInt(originalIndex) <= thumbnailsObjValues.length) {
-                            index = parseInt(originalIndex) - 1;
-                        } else {
-                            changesDone.push(`⛔Error al borrar: indice (${originalIndex}) fuera de rango`);
-                        }
-                        if (index >= 0 && index < thumbnailsObjValues.length) {
-                            if (ProductManager.thumbnailExists(prodFound.thumbnails[index])) {
-                                fileToDelete = prodFound.thumbnails[index];
-                                deletedFiles.push({ "status": true, "path": fileToDelete })
-                                await ProductManager.deleteThumbnail(fileToDelete);
-                            } else {
-                                deletedFiles.push({ "status": false, "path": prodFound.thumbnails[index] })
-                            }
-                        }
-                    });
-                    // Se eliminan las referencias a los archivos en el objeto
-                    deletedFiles.forEach(async (deletedFile) => {
-                        if (deletedFile.status) {
-                            changesDone.push(`Se borro la imagen ${deletedFile.path} de ${prodFound.title} `);
-                        }
-                        else {
-                            changesDone.push(`Se borro la imagen ${deletedFile.path} del objeto ${prodFound.title} (no se encontraba el archivo)`);
-                        }
-                        await ProductManager.removeThumbnailFromProduct(deletedFile.path, prodFound);
-                    });
-                }
+                await ProductManager.deleteThumbnailsFromProduct(prodFound, deleteThumbIndexParsed, changesDone);
                 // Si hay thumbnails subidas por Multer, se agregan al producto
                 if (req.files && req.files.length > 0) {
                     req.files.forEach((file) => {
