@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const cartModel = require('../models/cart.model.js');
 const { ProductManager } = require('./ProductManager.js');
+const { CartDao } = require('../dao/cart.dao.js');
+const mongoose = require('mongoose');
 
 // Clase Cart, con su correspondiente contructor las props definidas en la consigna
 class Cart {
@@ -16,7 +16,7 @@ class CartManager {
     static async getCartById(id) {
         try {
             if (mongoose.isValidObjectId(id)) {
-                return await cartModel.findById(id).lean();
+                return await CartDao.getCartById(id);
             }
             return undefined;
         } catch (error) {
@@ -28,7 +28,7 @@ class CartManager {
     static async getPopulatedCartById(id) {
         try {
             if (mongoose.isValidObjectId(id)) {
-                return await cartModel.findOne({ _id: id });
+                return await CartDao.getPopulatedCartById(id);
             }
             return undefined;
         } catch (error) {
@@ -39,7 +39,7 @@ class CartManager {
     // Agrega un producto a la BD
     static async addCart(cart) {
         try {
-            const newCart = await cartModel.create(cart);
+            const newCart = await CartDao.create(cart);
             console.log(`✅ Carrito '${newCart._id}' agregado exitosamente`);
             return newCart._id;
         } catch (error) {
@@ -55,7 +55,7 @@ class CartManager {
                 const cartExists = await this.getCartById(cartId);
                 const productExists = await ProductManager.getProductById(productId);
                 if (cartExists && productExists && productExists.status) {
-                    const cart = await cartModel.findOne({ _id: cartId });
+                    const cart = await CartDao.getPopulatedCartById(cartId);
                     let productIndexInCart = cartExists.products.findIndex(element => element.product._id.toString() === productId);
                     if (productIndexInCart === -1) {
                         if (quantity > productExists.stock)
@@ -84,7 +84,7 @@ class CartManager {
             throw new Error(`⛔ Error: No se pudo guardar el cambio en la BD => error: ${error.message}`);
         }
     }
-    
+
     // Si un producto existe en un carrito determinado, devuelve 'true'. Caso contrario, devuelve 'false'
     static async isProductInCart(cid, pid) {
         try {
@@ -116,12 +116,12 @@ class CartManager {
             if (mongoose.isValidObjectId(id)) {
                 const cart = this.getCartById(id);
                 if (cart) {
-                    return await cartModel.updateOne({ _id: id }, { $set: { products: [] } });
+                    return await CartDao.delete(id);
                 }
             }
             return false;
         } catch (error) {
-            throw new Error(`⛔ Error: No se pudo verificar si existe el carrito con id#${id} => error: ${error.message}`)
+            throw new Error(`⛔ Error: No se pudo borrar el carrito id#${id} => error: ${error.message}`)
         }
     }
 
@@ -132,7 +132,7 @@ class CartManager {
             let productDeletedFromCart = false;
             let productSearchIndex = 0;
             if (mongoose.isValidObjectId(cid) && mongoose.isValidObjectId(pid)) {
-                const cartExists = await cartModel.findById(cid);
+                const cartExists = await CartDao.getPopulatedCartById(cid);
                 const productExists = await ProductManager.getProductById(pid);
                 if (cartExists && productExists) {
                     while (!productDeletedFromCart && productSearchIndex < Object.values(cartExists.products).length) {

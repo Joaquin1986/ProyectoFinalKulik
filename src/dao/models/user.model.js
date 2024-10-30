@@ -41,5 +41,9 @@ userSchema.pre('findOne', function () {
     this.populate('cart');
 });
 
+userSchema.pre('findById', function () {
+    this.populate('cart');
+});
+
 module.exports = mongoose.model('user', userSchema);
 

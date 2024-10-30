@@ -1,12 +1,14 @@
 // Se realizan los imports mediante 'require', de acuerdo a lo visto en clase
 const { Router } = require('express');
-const { Cart, CartManager } = require('../../controllers/CartManager');
-const { Order, OrderManager } = require('../../controllers/OrderManager');
+const { CartManager } = require('../../controllers/CartManager');
+const { Ticket, TicketManager } = require('../../controllers/TicketManager');
 const { ProductManager } = require('../../controllers/ProductManager');
+const { passportCallBack } = require('../../passport/passportCallBack');
+const { verifyOwnCart } = require('../../passport/verifyOwnCart');
 
 const cartsApiRouter = Router();
 
-cartsApiRouter.get("/carts/:cid", async (req, res) => {
+cartsApiRouter.get("/carts/:cid", passportCallBack('current'), verifyOwnCart(), async (req, res) => {
     const { cid } = req.params;
     if (cid) {
         try {
@@ -21,39 +23,47 @@ cartsApiRouter.get("/carts/:cid", async (req, res) => {
     }
 });
 
-cartsApiRouter.post("/carts", async (req, res) => {
-    try {
-        const newCart = new Cart();
-        const result = await CartManager.addCart(newCart);
-        result ? res.status(201).json({ "cartId": result }) : res.status(400).json({
-            "⛔Error:":
-                "Request no válido"
-        });
-    } catch (error) {
-        res.status(500).json({ "⛔Error interno:": error.message });
-    }
-});
-
-cartsApiRouter.post("/carts/:cid/order", async (req, res) => {
+cartsApiRouter.post("/carts/:cid/purchase", passportCallBack('current'), verifyOwnCart(), async (req, res) => {
     const { cid: cartId } = req.params;
-    const { name, address, email, paymentMehod } = req.body;
-    if (cartId && name && address && email && (paymentMehod.toLowerCase() === 'cash' || paymentMehod.toLowerCase() === 'card')) {
+    const purchaser = req.user.email;
+    let amount = 0;
+    if (cartId && purchaser) {
         try {
-            const cartAlreadyOrdered = await OrderManager.isCartAldreadyOrdered(cartId);
-            if (cartAlreadyOrdered) {
-                return res.status(400).json({
-                    "error":
-                        "Orden ya finalizada"
-                });
-            }
+            // Verificamos si el carrito existe
             const cartExists = await CartManager.getPopulatedCartById(cartId);
+            const itemsNotBought = [];
             if (cartExists) {
-                const newOrder = new Order(cartExists._id, name, address, email, paymentMehod.toLowerCase());
-                const result = await OrderManager.addOrder(newOrder);
-                if (result) {
-                    ProductManager.updateOrderedProductsStock(cartExists.products);
-                    res.status(201).json({ "order": result._id });
+                // Iteramos el array de productos del carrito para verificar el stock de c/u y sumar cantidad
+                const products = Object.values(cartExists.products);
+                let index = 0;
+                if (products.length === 0) {
+                    return res.status(400).json({
+                        "error":
+                            "Carrito vacío"
+                    });
                 }
+                products.forEach(async (product) => {
+                    const isStock = await ProductManager.verifyProductStock(product.product._id, product.quantity);
+                    if (isStock) {
+                        const indexToDelete = Object.values(cartExists.products).findIndex((prod) => {
+                            if (prod.product._id === product.product._id) return prod.product._id;
+                            else return -1;
+                        });
+                        amount += product.product.price * product.quantity;
+                        await ProductManager.updateProductStock(product.product._id, product.quantity);
+                        cartExists.products.splice(indexToDelete, 1);
+                    } else {
+                        itemsNotBought.push(product.product._id);
+                        console.error("⛔ No hay stock suficiente de " + product.product.title);
+                    }
+                    if (index === (products.length - 1)) {
+                        await cartExists.save();
+                        const newTicket = new Ticket(amount, purchaser);
+                        const result = await TicketManager.addTicket(newTicket);
+                        res.status(201).json({ "ticket": result._id, "itemsNotBought": itemsNotBought });
+                    }
+                    index++;
+                });
             } else {
                 res.status(400).json({
                     "error":
@@ -71,8 +81,7 @@ cartsApiRouter.post("/carts/:cid/order", async (req, res) => {
     }
 });
 
-
-cartsApiRouter.put("/carts/:cid/products/:pid", async (req, res) => {
+cartsApiRouter.put("/carts/:cid/products/:pid", passportCallBack('current'), verifyOwnCart(), async (req, res) => {
     const { cid, pid } = req.params;
     const { quantity } = req.body;
     if (cid && pid && quantity) {
@@ -100,7 +109,7 @@ cartsApiRouter.put("/carts/:cid/products/:pid", async (req, res) => {
 });
 
 
-cartsApiRouter.put("/carts/:cid", async (req, res) => {
+cartsApiRouter.put("/carts/:cid", passportCallBack('current'), verifyOwnCart(), async (req, res) => {
     const { cid } = req.params;
     const { body } = req;
     if (cid && (typeof body).toLowerCase() === 'object') {
@@ -137,7 +146,6 @@ cartsApiRouter.put("/carts/:cid", async (req, res) => {
             }
             return res.status(200).json({ 'result': totalResult });
         } catch (error) {
-            console.log(error)
             return res.status(500).json({ "internalError": error.message });
         }
     }
@@ -145,7 +153,7 @@ cartsApiRouter.put("/carts/:cid", async (req, res) => {
         return res.status(400).json({ 'error': 'Request no válido' });
 });
 
-cartsApiRouter.delete("/carts/:cid", async (req, res) => {
+cartsApiRouter.delete("/carts/:cid", passportCallBack('current'), verifyOwnCart(), async (req, res) => {
     const { cid } = req.params;
     try {
         const cartAlreadyOrdered = await OrderManager.isCartAldreadyOrdered(cid);
@@ -165,7 +173,7 @@ cartsApiRouter.delete("/carts/:cid", async (req, res) => {
 });
 
 // Elimina un producto de un carrito
-cartsApiRouter.delete("/carts/:cid/products/:pid", async (req, res) => {
+cartsApiRouter.delete("/carts/:cid/products/:pid", passportCallBack('current'), verifyOwnCart(), async (req, res) => {
     const { cid, pid } = req.params;
     try {
         const cartExists = await CartManager.getCartById(cid);

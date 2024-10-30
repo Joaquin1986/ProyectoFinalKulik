@@ -1,6 +1,9 @@
 const { Router } = require('express');
 const { Product, ProductManager } = require('../../controllers/ProductManager');
 const { uploadMulter, buildResponse, parseThumbsIndex } = require('../../utils/utils');
+const { passportCallBack } = require('../../passport/passportCallBack');
+const { verifyAdmin } = require('../../passport/verifyAdmin');
+
 
 const productsApiRouter = Router();
 const maxFilesAllowed = 5;
@@ -59,7 +62,7 @@ productsApiRouter.get("/products/:pid", async (req, res) => {
 });
 
 // Al siguiente endpoint (POST) se le puede pasar un array llamado 'thumbnails" por Multer
-productsApiRouter.post("/products", uploadMulter.array('thumbnails'), async (req, res) => {
+productsApiRouter.post("/products", passportCallBack('current'), verifyAdmin(), uploadMulter.array('thumb nails'), async (req, res) => {
     const { body } = req;
     const { title, description, price, code, status, stock, category } = body;
     let newStatus = true;
@@ -102,7 +105,7 @@ productsApiRouter.post("/products", uploadMulter.array('thumbnails'), async (req
    Se pueden enviar también los valores  'deleteThumbIndex' como un array.
    Unicos status permitidos: true o false. Valor por defecto siempre es true, a menos que se especifique false.*/
 
-productsApiRouter.put("/products/:pid", uploadMulter.array('thumbnails'), async (req, res) => {
+productsApiRouter.put("/products/:pid", passportCallBack('current'), verifyAdmin(), uploadMulter.array('thumbnails'), async (req, res) => {
     const changesDone = [];
     const { pid } = req.params
     const { body } = req;
@@ -197,7 +200,7 @@ productsApiRouter.put("/products/:pid", uploadMulter.array('thumbnails'), async 
     }
 });
 
-productsApiRouter.delete("/products/:pid", async (req, res) => {
+productsApiRouter.delete("/products/:pid", passportCallBack('current'), verifyAdmin(), async (req, res) => {
     const { pid } = req.params;
     if (pid) {
         try {

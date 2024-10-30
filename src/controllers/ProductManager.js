@@ -1,6 +1,6 @@
+const { ProductDao } = require('../dao/product.dao');
 const fs = require('fs');
 const mongoose = require('mongoose');
-const productModel = require('../models/product.model.js');
 const path = require('path');
 
 // Clase Product, con su correspondiente contructor las props definidas en la consigna
@@ -30,7 +30,7 @@ class ProductManager {
         try {
             let productAlreadyExist = await this.getProductByCode(product.code);
             if (!productAlreadyExist) {
-                worked = await productModel.create(product);
+                worked = await ProductDao.crete(product);
                 console.log(`✅ Producto '  ${product.title}' agregado exitosamente`);
             } else {
                 worked = false;
@@ -45,7 +45,7 @@ class ProductManager {
     // Devuelve todos los productos creados hasta el momento en la BD
     static async getProducts() {
         try {
-            return await productModel.find({ deleted: false }).lean();
+            return await ProductDao.getProducts();
         } catch (error) {
             throw new Error(`⛔ Error al obtener datos de la BD: ${error.message}`);
         }
@@ -54,7 +54,7 @@ class ProductManager {
     // Devuelve los productos con paginate el plugin
     static async getPaginatedProducts(criteria, options) {
         try {
-            return await productModel.paginate(criteria, options);
+            return await ProductDao.getPaginatedProducts(criteria, options);
         } catch (error) {
             throw new Error(`⛔ Error al obtener datos de la BD: ${error.message}`);
         }
@@ -64,7 +64,7 @@ class ProductManager {
     static async getProductById(id) {
         try {
             if (mongoose.isValidObjectId(id)) {
-                return await productModel.findOne({ _id: id, deleted: false, status: true }).lean();
+                return await ProductDao.getProductById(id);
             }
             return undefined;
         } catch (error) {
@@ -76,7 +76,7 @@ class ProductManager {
     static async getProductByIdNoStatus(id) {
         try {
             if (mongoose.isValidObjectId(id)) {
-                return await productModel.findOne({ _id: id, deleted: false }).lean();
+                return await ProductDao.getProductByIdNoStatus(id);
             }
             return undefined;
         } catch (error) {
@@ -87,7 +87,7 @@ class ProductManager {
     // En caso de encontrarlo, devuelve un objeto 'Producto' de acuerdo al codigo proporcionado por argumento.
     // En caso de no encontrarlo, imprime error en la consola.
     static async getProductByCode(code) {
-        return await productModel.findOne({ code: { '$regex': code, $options: 'i' }, deleted: false }).lean();
+        return await ProductDao.getProductByCode(code);
     } catch(error) {
         throw new Error(`⛔ Error: No se pudo verificar si existe el producto con el código: ${code} => error: ${error.message}`);
     }
@@ -95,7 +95,7 @@ class ProductManager {
     // Actualiza un producto que es pasado por parámetro en la BD
     static async updateProduct(product) {
         try {
-            const result = await productModel.updateOne({ _id: product._id, deleted: false }, { $set: product });
+            const result = await ProductDao.updateProduct(product);
             console.log(`✅ Producto id#${product._id} actualizado exitosamente`);
             return result.acknowledged;
         } catch (error) {
@@ -106,7 +106,7 @@ class ProductManager {
     // Modifica el estado de un Producto en la BD
     static async productStatus(productId, status) {
         try {
-            const result = await productModel.updateOne({ _id: productId }, { status: status });
+            const result = await ProductDao.productStatus(productId, status)
             console.log(`✅ Producto id#${productId} ahora tiene status "${status}"`);
             return result.acknowledged;
         } catch (error) {
@@ -132,7 +132,7 @@ class ProductManager {
             if (mongoose.isValidObjectId(id)) {
                 const productToDelete = await this.getProductByIdNoStatus(id);
                 if (productToDelete) {
-                    const res = await productModel.updateOne({ _id: id }, { $set: { deleted: true } });
+                    await ProductDao.deleteProduct(id);
                     console.log(`✅ Producto #${id} eliminado exitosamente`);
                     result = true;
                 }
@@ -146,7 +146,7 @@ class ProductManager {
     // Devuelve 'true' si un código de Producto existe en la BD. Caso contrario, devuelve 'false'
     static async productCodeExists(productCode) {
         try {
-            const productFound = await productModel.findOne({ code: { '$regex': productCode, $options: 'i' }, deleted: false });
+            const productFound = await ProductDao.productCodeExists(productCode);
             if (productFound) return true;
             else return false;
         } catch {
@@ -221,10 +221,36 @@ class ProductManager {
         try {
             for (let count = 0; count < products.length; count++) {
                 const newStock = products[count].product.stock - products[count].quantity;
-                await productModel.updateOne({ _id: products[count].product._id }, { $set: { stock: newStock } });
+                await ProductDao.updateOrderedProductsStock(products[count].product._id, newStock);
             }
         } catch (error) {
             throw new Error(`⛔ Error: No se pudo actualizar el stock de los productos: ${error.message}`);
+        }
+    }
+
+    // Actualiza el stock de productos, recibe el id de producto y cantidad comprada
+    static async updateProductStock(productId, quantity) {
+        try {
+            const product = await this.getProductById(productId);
+            const newStock = product.stock - quantity;
+            await ProductDao.updateOrderedProductsStock(productId, newStock);
+
+        } catch (error) {
+            throw new Error(`⛔ Error: No se pudo actualizar el stock del producto: ${error.message}`);
+        }
+    }
+
+    static async verifyProductStock(productId, quantity) {
+        try {
+            if (mongoose.isValidObjectId(productId) && quantity) {
+                const productExists = await this.getProductById(productId);
+                if (productExists && quantity <= productExists.stock) return true;
+            }
+            console.error('⛔ Error: producto o cantidad no válidos')
+            return false;
+
+        } catch (error) {
+            throw new Error(`⛔ Error: No se pudo verificar el stock del producto #${productId}: ${error.message}`)
         }
     }
 }

@@ -102,7 +102,7 @@ const createUserResponse = (statusCode, result = null, req, data) => {
         status: statusCode,
         result: result,
         path: req.url,
-        payload: data,
+        payload: data
     };
 };
 
