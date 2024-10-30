@@ -30,8 +30,8 @@ class ProductManager {
         try {
             let productAlreadyExist = await this.getProductByCode(product.code);
             if (!productAlreadyExist) {
-                worked = await ProductDao.crete(product);
-                console.log(`✅ Producto '  ${product.title}' agregado exitosamente`);
+                worked = await ProductDao.create(product);
+                console.log(`✅ Producto '${product.title}' agregado exitosamente`);
             } else {
                 worked = false;
                 console.error(`⛔ Error: Código de Producto ya existente (Código:'${productAlreadyExist.code}'|Producto:'${productAlreadyExist.title}')`);

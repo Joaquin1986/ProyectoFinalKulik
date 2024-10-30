@@ -120,8 +120,11 @@ productsApiRouter.put("/products/:pid", passportCallBack('current'), verifyAdmin
             if (status && status.toLowerCase() === "true") statusNew = true;
             const prodFound = await ProductManager.getProductByIdNoStatus(pid);
             if (prodFound) {
-                let thumbnailsTotalQuantity = Object.values(prodFound.thumbnails).length + req.files.length;
-                if (req.files.length > maxFilesAllowed || thumbnailsTotalQuantity > maxFilesAllowed) return res.status(400).json({
+                let thumbnailsTotalQuantity = 0;
+                const arrayThumbnails = Object.keys(prodFound.thumbnails);
+                if (arrayThumbnails.length > 0)
+                    thumbnailsTotalQuantity = arrayThumbnails.length + req.files.length;
+                if (req.files && req.files.length > maxFilesAllowed || thumbnailsTotalQuantity > maxFilesAllowed) return res.status(400).json({
                     "Error":
                         `Se superó el límite de imágenes permitido: ${maxFilesAllowed}`
                 });
@@ -163,7 +166,7 @@ productsApiRouter.put("/products/:pid", passportCallBack('current'), verifyAdmin
                     prodFound.category = category;
                     changesDone.push(`Se modifica la categoria a ${category}`);
                 }
-                if (req.files.length > maxFilesAllowed) {
+                if (req.files && req.files.length > maxFilesAllowed) {
                     return res.status(400).json({
                         "Error":
                             `Se superó el límite de thumbnails(${maxFilesAllowed})`
@@ -193,6 +196,7 @@ productsApiRouter.put("/products/:pid", passportCallBack('current'), verifyAdmin
             }
             return res.status(404).json({ "Error": "Producto no encontrado" });
         } catch (error) {
+            console.log(error);
             return res.status(500).json({ "Error interno": `${error}, ${error.message}` });
         }
     } else {
