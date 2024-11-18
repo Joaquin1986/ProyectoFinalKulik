@@ -2,7 +2,7 @@ const passport = require('passport');
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const JwtStrategy = require('passport-jwt').Strategy;
 const dotenv = require('dotenv').config();
-const { UserManager } = require('../controllers/UserManager');
+const { UserDao } = require('../dao/user.dao');
 
 const SECRET_KEY = process.env.SECRET_KEY;
 
@@ -33,7 +33,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
     try {
-        const user = await UserManager.getUserById(id);
+        const user = await UserDao.getUserById(id);
         return done(null, user);
     } catch (error) {
         return done(error);
