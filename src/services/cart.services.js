@@ -4,11 +4,39 @@ const { Ticket, TicketDao } = require('../dao/ticket.dao');
 
 class CartServices {
 
-    static async addProductToCart(cid, pid, quantity) {
+    static async addProductToCart(cartId, productId, quantity) {
         try {
-            return await CartDao.addProductToCart(cid, pid, quantity);
+            if (cartId && productId && quantity) {
+                const cartExists = await this.getCartById(cartId);
+                const productExists = await ProductDao.getProductById(productId);
+                if (cartExists && productExists && productExists.status) {
+                    const cart = await CartDao.getPopulatedCartById(cartId);
+                    let productIndexInCart = cartExists.products.findIndex(element => element.product._id.toString() === productId);
+                    if (productIndexInCart === -1) {
+                        if (quantity > productExists.stock)
+                            return -1;
+                        else {
+                            cart.products.push({ 'product': productId, 'quantity': quantity });
+                            await cart.save();
+                        }
+                    } else {
+                        if ((cart.products[productIndexInCart].quantity + quantity) > productExists.stock)
+                            return -1
+                        else {
+                            cart.products[productIndexInCart].quantity += quantity;
+                            await cart.save();
+                        }
+                    }
+                    console.log(`✅ +${quantity} de producto #${productId} agregado al carrito #${cartId}`);
+                    return true;
+                }
+                console.error('⛔ Error: producto o carrito inexistente')
+                return false;
+            }
+            console.error('⛔ Error: se recibieron argumentos no válidos');
+            return false;
         } catch (error) {
-            throw new Error(`⛔ Error: No se pudo agregar el producto #${pid} al carrito #${cid} => error: ${error.message}`)
+            throw new Error(`⛔ Error: No se pudo agregar el producto #${productId} al carrito #${cartId} => error: ${error.message}`)
         }
     }
 
@@ -30,16 +58,16 @@ class CartServices {
 
     static async deleteProductFromCart(cid, pid) {
         try {
-            const cartExists = await CartDao.getCartById(cid);
+            const cartExists = await CartDao.getPopulatedCartById(cid);
             if (!cartExists)
                 return {
                     "error": true,
                     "code": 400,
                     "reason": `Carrito #${cid} inexistente`
                 };
-            const isProductInCart = await CartDao.isProductInCart(cid, pid);
+            const isProductInCart = await this.isProductInCart(cid, pid);
             if (isProductInCart) {
-                const result = await CartDao.deleteProductFromCart(cid, pid);
+                const result = await CartDao.deleteProductFromCart(cartExists, pid);
                 const newCart = await CartDao.getPopulatedCartById(cid);
                 if (result)
                     return {
@@ -56,6 +84,31 @@ class CartServices {
             }
         } catch (error) {
             throw new Error(`⛔ Error: No se pudo borrar el producto #${pid} del carrito #${cid} => error: ${error.message}`)
+        }
+    }
+
+    // Si un producto existe en un carrito determinado, devuelve 'true'. Caso contrario, devuelve 'false'
+    static async isProductInCart(cid, pid) {
+        try {
+            let productFoundInCart = false;
+            let productSearchIndex = 0;
+            if (cid && pid) {
+                const cartExists = await this.getCartById(cid);
+                const productExists = await ProductDao.getProductById(pid);
+                if (cartExists && productExists) {
+                    while (!productFoundInCart && productSearchIndex < Object.values(cartExists.products).length) {
+                        if (Object.values(cartExists.products)[productSearchIndex].product._id.toString() === pid) {
+                            productFoundInCart = true;
+                        }
+                        productSearchIndex++;
+                    }
+                }
+            }
+            if (!productFoundInCart)
+                console.error(`⛔ Error: no se encontró el producto #${pid} en el carrito #${cid}`);
+            return productFoundInCart;
+        } catch (error) {
+            throw new Error(`⛔ Error: No se pudo verificar la existencia del producto #${pid} en el carrito #${cid} => error: ${error.message}`)
         }
     }
 
@@ -120,7 +173,7 @@ class CartServices {
                         if (parseInt(products[count].quantity) < 1)
                             totalResult.push({ ...products[count], "result": "error: cantidad no válida" });
                         else {
-                            const result = await CartDao.addProductToCart(cid, products[count].product, products[count].quantity);
+                            const result = await this.addProductToCart(cid, products[count].product, products[count].quantity);
                             if (result && result !== -1) totalResult.push({ ...products[count], "result": "success: producto agregado exitosamente" });
                             else if (result && result === -1) totalResult.push({ ...products[count], "result": "error: stock insuficiente" });
                             else totalResult.push({ ...products[count], "result": "error: producto inexistente" });
@@ -140,7 +193,7 @@ class CartServices {
 
     static async updateCartByProduct(cartId, productId, quantity) {
         try {
-            const result = await CartDao.addProductToCart(cartId, productId, quantity);
+            const result = await this.addProductToCart(cartId, productId, quantity);
             if (result === -1) {
                 return {
                     "error": true,

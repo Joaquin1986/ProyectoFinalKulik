@@ -47,70 +47,6 @@ class CartDao {
         }
     }
 
-    // Agrega una cantidad de cierto producto (productId) a determinado carrito (cartId)
-    static async addProductToCart(cartId, productId, quantity) {
-        quantity = parseInt(quantity);
-        try {
-            if (mongoose.isValidObjectId(cartId) || mongoose.isValidObjectId(productId) || quantity) {
-                const cartExists = await this.getCartById(cartId);
-                const productExists = await ProductDao.getProductById(productId);
-                if (cartExists && productExists && productExists.status) {
-                    const cart = await cartModel.findOne({ _id: cartId });
-                    let productIndexInCart = cartExists.products.findIndex(element => element.product._id.toString() === productId);
-                    if (productIndexInCart === -1) {
-                        if (quantity > productExists.stock)
-                            return -1;
-                        else {
-                            cart.products.push({ 'product': productId, 'quantity': quantity });
-                            await cart.save();
-                        }
-                    } else {
-                        if ((cart.products[productIndexInCart].quantity + quantity) > productExists.stock)
-                            return -1
-                        else {
-                            cart.products[productIndexInCart].quantity += quantity;
-                            await cart.save();
-                        }
-                    }
-                    console.log(`✅ +${quantity} de producto #${productId} agregado al carrito #${cartId}`);
-                    return true;
-                }
-                console.error('⛔ Error: producto o carrito inexistente')
-                return false;
-            }
-            console.error('⛔ Error: se recibieron argumentos no válidos');
-            return false;
-        } catch (error) {
-            console.log(error)
-            throw new Error(`⛔ Error: No se pudo guardar el cambio en la BD => error: ${error.message}`);
-        }
-    }
-
-    // Si un producto existe en un carrito determinado, devuelve 'true'. Caso contrario, devuelve 'false'
-    static async isProductInCart(cid, pid) {
-        try {
-            let productFoundInCart = false;
-            let productSearchIndex = 0;
-            if (mongoose.isValidObjectId(cid) && mongoose.isValidObjectId(pid)) {
-                const cartExists = await this.getCartById(cid);
-                const productExists = await ProductDao.getProductById(pid);
-                if (cartExists && productExists) {
-                    while (!productFoundInCart && productSearchIndex < Object.values(cartExists.products).length) {
-                        if (Object.values(cartExists.products)[productSearchIndex].product._id.toString() === pid) {
-                            productFoundInCart = true;
-                        }
-                        productSearchIndex++;
-                    }
-                }
-            }
-            if (!productFoundInCart)
-                console.error(`⛔ Error: no se encontró el producto #${pid} en el carrito #${cid}`);
-            return productFoundInCart;
-        } catch (error) {
-            throw new Error(`⛔ Error: No se pudo verificar la existencia del producto #${pid} en el carrito #${cid} => error: ${error.message}`)
-        }
-    }
-
     // En caso de encontrarlo, elimina todos los productos del carrito indicado. Si el carrito no existe, devuelve 'false'
     static async deleteCart(id) {
         try {
@@ -128,23 +64,17 @@ class CartDao {
 
     // Borra un producto de un carrito determinados por argumentos. 
     // En caso de no poder hacerlo, devuelve 'false'
-    static async deleteProductFromCart(cid, pid) {
+    static async deleteProductFromCart(cartExists, pid) {
         try {
             let productDeletedFromCart = false;
             let productSearchIndex = 0;
-            if (mongoose.isValidObjectId(cid) && mongoose.isValidObjectId(pid)) {
-                const cartExists = await this.getPopulatedCartById(cid);
-                const productExists = await ProductDao.getProductById(pid);
-                if (cartExists && productExists) {
-                    while (!productDeletedFromCart && productSearchIndex < Object.values(cartExists.products).length) {
-                        if (Object.values(cartExists.products)[productSearchIndex].product._id.toString() === pid) {
-                            cartExists.products.splice(productSearchIndex, 1);
-                            await cartExists.save();
-                            productDeletedFromCart = true;
-                        }
-                        productSearchIndex++;
-                    }
+            while (!productDeletedFromCart && productSearchIndex < Object.values(cartExists.products).length) {
+                if (Object.values(cartExists.products)[productSearchIndex].product._id.toString() === pid) {
+                    cartExists.products.splice(productSearchIndex, 1);
+                    await cartExists.save();
+                    productDeletedFromCart = true;
                 }
+                productSearchIndex++;
             }
             return productDeletedFromCart;
         } catch (error) {
