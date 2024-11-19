@@ -13,7 +13,7 @@ const usersApiRouter = Router();
 usersApiRouter.post('/sessions/register', SessionsControllers.createUser);
 
 // Solamente un admin puede crear a otro
-usersApiRouter.post('/sessions/register/admin', passportCallBack('current'), verifyAdmin(), SessionsControllers.createAdminUser);
+usersApiRouter.post('/sessions/register/admin', passportCallBack('current'), verifyAdmin, SessionsControllers.createAdminUser);
 
 usersApiRouter.post('/sessions/login', SessionsControllers.login);
 

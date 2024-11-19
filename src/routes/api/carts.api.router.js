@@ -6,11 +6,11 @@ const { verifyOwnCart } = require('../../passport/verifyOwnCart');
 
 const cartsApiRouter = Router();
 
-cartsApiRouter.get("/carts/:cid", passportCallBack('current'), verifyOwnCart(), CartControllers.getCartById);
+cartsApiRouter.get("/carts/:cid", passportCallBack('current'), verifyOwnCart, CartControllers.getCartById);
 
-cartsApiRouter.post("/carts/:cid/purchase", passportCallBack('current'), verifyOwnCart(), CartControllers.purchaseCart);
+cartsApiRouter.post("/carts/:cid/purchase", passportCallBack('current'), verifyOwnCart, CartControllers.purchaseCart);
 
-cartsApiRouter.put("/carts/:cid/products/:pid", passportCallBack('current'), verifyOwnCart(), CartControllers.updateCartByProduct);
+cartsApiRouter.put("/carts/:cid/products/:pid", passportCallBack('current'), verifyOwnCart, CartControllers.updateCartByProduct);
 
 cartsApiRouter.put("/carts/:cid", passportCallBack('current'), verifyOwnCart, CartControllers.updateCart);
 
