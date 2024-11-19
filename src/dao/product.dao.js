@@ -228,7 +228,7 @@ class ProductDao {
         }
     }
 
-    // Actualiza el stock de productos, recibe el id de producto y cantidad comprada
+    // Actualiza el stock de productos, recibe el id de producto y cantidad comprada (la resta del stock)
     static async updateProductStock(productId, quantity) {
         try {
             const product = await this.getProductById(productId);

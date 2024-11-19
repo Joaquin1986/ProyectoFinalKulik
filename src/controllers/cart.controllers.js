@@ -24,12 +24,10 @@ class CartControllers {
         if (cartId && purchaser) {
             try {
                 const result = await CartServices.purchaseCart(cartId, purchaser);
-                console.log(result)
                 if (result.error) return res.status(400).json({ "error": result.reason });
                 const { ticket, itemsNotBought } = result;
                 return res.status(201).json({ "ticket": ticket, "itemsNotBought": itemsNotBought });
             } catch (error) {
-                console.log(error)
                 res.status(500).json({ "internalError": error.message });
             }
         } else {

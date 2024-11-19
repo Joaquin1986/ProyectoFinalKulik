@@ -68,26 +68,25 @@ class CartServices {
             if (cartExists) {
                 // Iteramos el array de productos del carrito para verificar el stock de c/u y sumar cantidad
                 const products = Object.values(cartExists.products);
-                let index = 0;
                 if (products.length === 0) {
                     return ({
                         "error": true,
                         "reason": "Carrito vacío"
                     });
                 }
-                products.forEach(async (product) => {
-                    const isStock = await ProductDao.verifyProductStock(product.product._id, product.quantity);
+                for (let index = 0; index < products.length; index++) {
+                    const isStock = await ProductDao.verifyProductStock(products[index].product._id, products[index].quantity);
                     if (isStock) {
                         const indexToDelete = Object.values(cartExists.products).findIndex((prod) => {
-                            if (prod.product._id === product.product._id) return prod.product._id;
+                            if (prod.product._id === products[index].product._id) return prod.product._id;
                             else return -1;
                         });
-                        amount += product.product.price * product.quantity;
-                        await ProductDao.updateProductStock(product.product._id, product.quantity);
+                        amount += products[index].product.price * products[index].quantity;
+                        await ProductDao.updateProductStock(products[index].product._id, products[index].quantity);
                         cartExists.products.splice(indexToDelete, 1);
                     } else {
-                        itemsNotBought.push(product.product._id);
-                        console.error("⛔ No hay stock suficiente de " + product.product.title);
+                        itemsNotBought.push(products[index].product._id);
+                        console.error("⛔ No hay stock suficiente de " + products[index].product.title);
                     }
                     if (index === (products.length - 1)) {
                         await cartExists.save();
@@ -99,8 +98,7 @@ class CartServices {
                             "itemsNotBought": itemsNotBought
                         });
                     }
-                    index++;
-                });
+                }
             } else
                 return ({
                     "error": true,
