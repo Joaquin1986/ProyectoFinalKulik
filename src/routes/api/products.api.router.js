@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const { ProductControllers } = require('../../controllers/product.controllers');
 const { passportCallBack } = require('../../passport/passportCallBack');
-const { verifyAdmin } = require('../../passport/verifyAdmin');
+const { verifyAdmin } = require('../../middlewares/verifyAdmin');
 const { uploadMulter } = require('../../utils/utils');
 
 const productsApiRouter = Router();

@@ -2,7 +2,7 @@
 const { Router } = require('express');
 const { SessionsControllers } = require('../../controllers/sessions.controllers');
 const { passportCallBack } = require('../../passport/passportCallBack');
-const { verifyAdmin } = require('../../passport/verifyAdmin');
+const { verifyAdmin } = require('../../middlewares/verifyAdmin');
 
 const usersApiRouter = Router();
 

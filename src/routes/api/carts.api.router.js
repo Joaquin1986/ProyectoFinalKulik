@@ -2,7 +2,7 @@
 const { Router } = require('express');
 const { CartControllers } = require('../../controllers/cart.controllers');
 const { passportCallBack } = require('../../passport/passportCallBack');
-const { verifyOwnCart } = require('../../passport/verifyOwnCart');
+const { verifyOwnCart } = require('../../middlewares/verifyOwnCart');
 
 const cartsApiRouter = Router();
 
